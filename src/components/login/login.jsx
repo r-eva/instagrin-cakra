@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -17,10 +17,34 @@ import {
   Image,
 } from "@chakra-ui/react";
 import Logo from "./instagram_logo.png";
-// import { OAuthButtonGroup } from "./OAuthButtonGroup";
-// import { PasswordField } from "./PasswordField";
+import { loginUser } from "../../redux/counter/counterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { urlApi } from "../../database/database";
 
 export default function Login() {
+  const isLogin = useSelector((state) => state.counter.isLogin);
+  const dispatch = useDispatch();
+  const [isUserNotExist, setIsUserNotExist] = useState(false);
+
+  let userNameInput = "";
+
+  const onButtonClickSignin = async () => {
+    const data = await fetch(`${urlApi}userData.json`).then((res) => {
+      return res.json();
+    });
+    let userExist = data.filter((item) => item.email === userNameInput);
+    console.log(userExist);
+    if (userExist.length === 1) {
+      return dispatch(loginUser());
+    } else {
+      setIsUserNotExist(true);
+    }
+  };
+
+  const renderLoginMessage = () => {
+    if (isUserNotExist) return <p>User not exist!</p>;
+  };
+
   return (
     <Container
       maxW="lg"
@@ -52,9 +76,13 @@ export default function Login() {
             <Stack spacing="5">
               <FormControl>
                 <FormLabel htmlFor="email">Email</FormLabel>
-                <Input id="email" type="email" />
+                <Input
+                  id="email"
+                  type="email"
+                  onInput={(e) => (userNameInput = e.target.value)}
+                />
               </FormControl>
-              {/* <PasswordField /> */}
+              {renderLoginMessage()}
             </Stack>
             <HStack justify="space-between">
               <Checkbox defaultChecked>Remember me</Checkbox>
@@ -63,7 +91,7 @@ export default function Login() {
               </Button>
             </HStack>
             <Stack spacing="6">
-              <Button>Sign in</Button>
+              <Button onClick={onButtonClickSignin}>Sign in</Button>
               <HStack>
                 <Divider />
                 <Text textStyle="sm" whiteSpace="nowrap" color="fg.muted">
@@ -71,7 +99,6 @@ export default function Login() {
                 </Text>
                 <Divider />
               </HStack>
-              {/* <OAuthButtonGroup /> */}
             </Stack>
           </Stack>
         </Box>

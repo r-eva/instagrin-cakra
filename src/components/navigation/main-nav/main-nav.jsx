@@ -6,15 +6,9 @@ export default function MainNav() {
   const isLogin = useSelector((state) => state.counter.isLogin);
   const dispatch = useDispatch();
 
-  const renderLogin = () => {
-    if (isLogin)
-      return <button onClick={() => dispatch(logoutUser())}>Logout</button>;
-    return <button onClick={() => dispatch(loginUser())}>Login</button>;
-  };
-
   return (
     <nav>
-      {renderLogin()}
+      <button onClick={() => dispatch(logoutUser())}>Logout</button>
       <br />
       <span>Counting Notiv</span>
     </nav>

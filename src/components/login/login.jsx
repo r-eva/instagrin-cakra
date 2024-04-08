@@ -10,11 +10,14 @@ import {
   Stack,
   Text,
   Image,
+  Card,
+  CardBody,
 } from "@chakra-ui/react";
 import Logo from "./instagram_logo.png";
 import { loginUser } from "../../redux/counter/counterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { urlApi } from "../../database/database";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const isLoggedIn = useSelector((state) => state.counter.isLogin);
@@ -85,6 +88,20 @@ export default function Login() {
             <Divider />
           </Stack>
         </Stack>
+      </Stack>
+      <Stack mt="4">
+        <Card>
+          <CardBody>
+            <Text>
+              Don't have an account?
+              <Link to="/register">
+                <Button colorScheme="blue" variant="link" ms="1">
+                  Sign up
+                </Button>
+              </Link>
+            </Text>
+          </CardBody>
+        </Card>
       </Stack>
     </Container>
   );

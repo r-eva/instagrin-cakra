@@ -1,18 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, logoutUser } from "../../../redux/counter/counterSlice";
+import { logoutUser } from "../../../redux/counter/counterSlice";
+import { redirect } from "react-router-dom";
 
 export default function MainNav() {
   const isLoggedIn = useSelector((state) => state.counter.isLogin);
   const dispatch = useDispatch();
-
-  const renderLogin = () => {
-    if (isLoggedIn)
-      return <button onClick={() => dispatch(logoutUser())}>Logout</button>;
+  const onUserLogout = () => {
+    dispatch(logoutUser());
+    return redirect("/login");
   };
-
   return (
     <nav>
-      {renderLogin()}
+      <button onClick={onUserLogout}>Logout</button>
       <br />
       <span>Counting Notiv</span>
     </nav>

@@ -4,6 +4,6 @@ import { useSelector } from "react-redux";
 
 export default function Landing() {
   const isLoggedIn = useSelector((state) => state.counter.isLogin);
-  const landingPage = !isLoggedIn ? <Login /> : <MainNav />;
-  return <>{landingPage}</>;
+  if (!isLoggedIn) return <Login />;
+  return <MainNav />;
 }

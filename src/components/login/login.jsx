@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -28,22 +28,22 @@ export default function Login() {
   const [isUserNotExist, setIsUserNotExist] = useState(false);
 
   let userNameInput = "";
+  let userPasswordInput = "";
 
   const onButtonClickSignin = async () => {
     const data = await fetch(`${urlApi}userData.json`).then((res) => {
       return res.json();
     });
-    let userExist = data.filter((item) => item.email === userNameInput);
-    console.log(userExist);
-    if (userExist.length === 1) {
-      return dispatch(loginUser());
-    } else {
-      setIsUserNotExist(true);
-    }
+
+    const userExist = data.some(
+      (item) =>
+        item.email === userNameInput && item.password === userPasswordInput
+    );
+    userExist ? dispatch(loginUser()) : setIsUserNotExist(true);
   };
 
   const renderLoginMessage = () => {
-    if (isUserNotExist) return <p>User not exist!</p>;
+    if (isUserNotExist) return "User does not exist. Please try again.";
   };
 
   return (
@@ -63,14 +63,27 @@ export default function Login() {
             <Heading size={{ base: "xs", md: "sm" }}>
               Log in to your account
             </Heading>
-            <Input
-              type="text"
-              placeholder="Phone number, username, or e-mail"
-            />
-            <Input type="password" placeholder="Password" />
-            <Button colorScheme="twitter" variant="solid" size="sm">
+            <FormControl>
+              <Input
+                type="email"
+                placeholder="Phone number, username, or e-mail"
+                onInput={(e) => (userNameInput = e.target.value)}
+              />
+              <Input
+                type="password"
+                placeholder="Password"
+                onInput={(e) => (userPasswordInput = e.target.value)}
+              />
+            </FormControl>
+            <Button
+              colorScheme="twitter"
+              variant="solid"
+              size="sm"
+              onClick={onButtonClickSignin}
+            >
               Log In
             </Button>
+            <Text>{renderLoginMessage()}</Text>
             <HStack>
               <Divider />
               <Text textStyle="sm" whiteSpace="nowrap" color="fg.muted">
@@ -138,13 +151,12 @@ export default function Login() {
                   onInput={(e) => (userNameInput = e.target.value)}
                 />
               </FormControl>
-              {renderLoginMessage()}
             </Stack>
             <HStack justify="space-between">
               <Checkbox defaultChecked>Remember me</Checkbox>
             </HStack>
             <Stack spacing="6">
-              <Button>Sign in</Button>
+              <Button onClick={onButtonClickSignin}>Sign in</Button>
               {/* <OAuthButtonGroup /> */}
             </Stack>
           </Stack>
